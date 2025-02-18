@@ -98,7 +98,7 @@ public class Constants {
          */
         public static final double steerMtrGearReduction = (14.0 / 50.0) * (10.0 / 60.0);
 
-        public static final double wheelRadiusMeters = Units.inchesToMeters(2.5);
+        public static final double wheelRadiusMeters = Units.inchesToMeters(2);
         public static final double wheelCircumferenceMeters = 2.0 * wheelRadiusMeters * Math.PI;
 
         public static final double driveMetersPerEncRev = wheelCircumferenceMeters * driveMtrGearReduction;
