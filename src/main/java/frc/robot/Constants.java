@@ -32,6 +32,9 @@ public class Constants {
         public static final int backRightSteerMtrId = 7;
         public static final int backRightDriveMtrId = 8;
 
+        public static final int m_rightLiftMtrId = 14;
+        public static final int m_leftLiftMtrId = 15;
+
         //Leader Mtr is Right Mtr and Follower Mtr is Left Mtr
         public static final int leaderRollerMtrId = 21;
         public static final int followerRollerMtrId = 22;
