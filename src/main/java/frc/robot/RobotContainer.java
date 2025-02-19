@@ -19,17 +19,19 @@ import frc.robot.commands.lights.LightsDefaultCmd;
 import frc.robot.commands.lights.PartyModeCmd;
 import frc.robot.subsystems.LightsSys;
 import frc.robot.subsystems.SwerveSys;
+import frc.robot.subsystems.LiftSys;
 
 public class RobotContainer {
     
     // Initialize subsystems.
     private final SwerveSys swerveSys = new SwerveSys();
+    private final LightsSys lightsSys = new LightsSys();
+    private final LiftSys liftSys = new LiftSys();
     //private final PivotSys pivotSys = new PivotSys();
     //private final RollersSys rollerSys = new RollersSys();
     //private final FeederSys feederSys = new FeederSys();
     //private final ClimberSys climberSys = new ClimberSys();
-    private final LightsSys lightsSys = new LightsSys();
-
+    
     //Initialize joysticks.
     private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.driverGamepadPort);
     private final CommandXboxController operatorController = new CommandXboxController(ControllerConstants.operatorGamepadPort);
@@ -89,45 +91,7 @@ public class RobotContainer {
             .onFalse(new FeederStopCmd(feederSys));
         */
 
-        //operatorController.x().onTrue(new PivotHomePresetCmd(pivotSys));
-
-        //operatorController.y().onTrue(new AutoSubwooferFireCmd(feederSys, rollerSys, pivotSys));
-      
-        //operatorController.povUp().onTrue(new ClimberUpCmd(climberSys)).onFalse(new ClimberStopCmd(climberSys));
-        
-        //operatorController.povRight().onTrue(new AutoSourceIntakeCmd(pivotSys, feederSys, rollerSys)).onFalse(new AutoAllHomeCmd(pivotSys, feederSys, rollerSys));
-
-        //operatorController.povDown().onTrue(new ClimberDownCmd(climberSys)).onFalse(new ClimberStopCmd(climberSys));
-        
-        //operatorController.povLeft().onTrue(new AutoAmpHoldUpCmd(pivotSys, spacebarSys)).onFalse(new AutoAmpHoldDownCmd(pivotSys, spacebarSys));
-        
-
-        /*operatorController.axisGreaterThan(XboxController.Axis.kRightTrigger.value, ControllerConstants.triggerPressedThreshhold)
-            .onTrue(new RollersFireCmd(rollerSys))
-            .onFalse(new RollersStopCmd(rollerSys));
-        */
-        /*operatorController.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, ControllerConstants.triggerPressedThreshhold)
-            .onTrue(new RollersIntakeCmd(rollerSys))
-            .onFalse(new RollersStopCmd(rollerSys));
-        */
         operatorController.start().toggleOnTrue(new PartyModeCmd(lightsSys));
-
-         //Servo spacebar
-        // operatorController.povDown().onTrue(new ServoSpacebarHomeCmd(servoSpacebarSys));
-
-        // operatorController.povLeft().onTrue(new ServoSpacebarOutCmd(servoSpacebarSys));
-
-
-        // For spacebar testin and troubleshootin
-        
-       //operatorController.povLeft().onTrue(new SpacebarOutCmd(spacebarSys));
-       //operatorController.povDown().onTrue(new SpacebarHomeCmd(spacebarSys));
-
-        // For Pivot testin and troubleshootin
-
-        // operatorController.b().onTrue(new PivotPodiumPresetCmd(pivotSys));
-        // operatorController.a().onTrue(new PivotGroundPresetCmd(pivotSys));
-        // operatorController.y().onTrue(new PivotAmpPresetCmd(pivotSys));
     }
 
     public void configDriverBindings() {
@@ -162,44 +126,42 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+        // Returns Auto Selected from Shuffle Board
         return autoSelector.getSelected();
-        // return new FollowPathCmd("TEST", swerveSys);
     } 
 
     // For uniformity, any information sent to Shuffleboard/SmartDashboard should go here.
     public void updateInterface() {
+        // Heading & Speed
         SmartDashboard.putNumber("heading degrees", swerveSys.getHeading().getDegrees());
         SmartDashboard.putNumber("speed m/s", swerveSys.getAverageDriveVelocityMetersPerSec());
 
+        // Position X/Y from Pose Estimator
         SmartDashboard.putNumber("pose x meters", swerveSys.getPose().getX());
         SmartDashboard.putNumber("pose y meters", swerveSys.getPose().getY());
 
+        // Position X from Pose Estimator from blue side
         SmartDashboard.putNumber("blue pose x meters", swerveSys.getBlueSidePose().getX());
 
+        // Module Positions from Pose Estimator
         SmartDashboard.putNumber("FL angle degrees", swerveSys.getModuleStates()[0].angle.getDegrees());
         SmartDashboard.putNumber("FR angle degrees", swerveSys.getModuleStates()[1].angle.getDegrees());
         SmartDashboard.putNumber("BL angle degrees", swerveSys.getModuleStates()[2].angle.getDegrees());
         SmartDashboard.putNumber("BR angle degrees", swerveSys.getModuleStates()[3].angle.getDegrees());
 
+        // Raw Module Positions
         SmartDashboard.putNumber("FL raw CANCoder degrees", swerveSys.getCanCoderAngles()[0].getDegrees());
         SmartDashboard.putNumber("FR raw CANCoder degrees", swerveSys.getCanCoderAngles()[1].getDegrees());
         SmartDashboard.putNumber("BL raw CANCoder degrees", swerveSys.getCanCoderAngles()[2].getDegrees());
         SmartDashboard.putNumber("BR raw CANCoder degrees", swerveSys.getCanCoderAngles()[3].getDegrees());
-
+        
+        // Offset
         SmartDashboard.putNumber("FL offset CANCoder degrees", swerveSys.getCanCoderAngles()[0].getDegrees() - DriveConstants.frontLeftModOffset.getDegrees());
         SmartDashboard.putNumber("FR offset CANCoder degrees", swerveSys.getCanCoderAngles()[1].getDegrees() - DriveConstants.frontRightModOffset.getDegrees());
         SmartDashboard.putNumber("BL offset CANCoder degrees", swerveSys.getCanCoderAngles()[2].getDegrees() - DriveConstants.backLeftModOffset.getDegrees());
         SmartDashboard.putNumber("BR offset CANCoder degrees", swerveSys.getCanCoderAngles()[3].getDegrees() - DriveConstants.backRightModOffset.getDegrees());
 
-        //SmartDashboard.putNumber("pivot degrees", pivotSys.getCurrentPositionDeg());
-
+        // Average Drive Voltages
         SmartDashboard.putNumber("drive voltage", swerveSys.getAverageDriveVoltage());
-
-        //SmartDashboard.putNumber("roller rpm", rollerSys.getRPM());
-
-        /*SmartDashboard.putNumber("spacebar position degrees", spacebarSys.getCurrentPositionDeg());
-        SmartDashboard.putNumber("spacebar position enc counts", spacebarSys.getCurrentPositionEncCounts());
-        SmartDashboard.putNumber("spacebar target", spacebarSys.getSpacebarTargetDeg());
-        */
     }   
 }
