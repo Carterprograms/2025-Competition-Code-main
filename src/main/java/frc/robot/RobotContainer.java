@@ -13,8 +13,9 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drivetrain.ArcadeDriveCmd;
 import frc.robot.commands.drivetrain.LockCmd;
+import frc.robot.commands.drivetrain.ReefPositioningCmd;
 import frc.robot.commands.drivetrain.TurnToHeadingCmd;
-import frc.robot.commands.drivetrain.AimToSpeakerCmd;
+import frc.robot.commands.drivetrain.AimToReefCmd;
 import frc.robot.commands.lights.LightsDefaultCmd;
 import frc.robot.commands.lights.PartyModeCmd;
 import frc.robot.subsystems.LightsSys;
@@ -25,73 +26,69 @@ public class RobotContainer {
     
     // Initialize subsystems.
     private final SwerveSys swerveSys = new SwerveSys();
-    private final LightsSys lightsSys = new LightsSys();
-    private final LiftSys liftSys = new LiftSys();
-    //private final PivotSys pivotSys = new PivotSys();
-    //private final RollersSys rollerSys = new RollersSys();
-    //private final FeederSys feederSys = new FeederSys();
-    //private final ClimberSys climberSys = new ClimberSys();
-    
-    //Initialize joysticks.
-    private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.driverGamepadPort);
-    private final CommandXboxController operatorController = new CommandXboxController(ControllerConstants.operatorGamepadPort);
-
-    //Initialize auto selector.
-    SendableChooser<Command> autoSelector = new SendableChooser<Command>();
-
-    public RobotContainer() {
-        RobotController.setBrownoutVoltage(DriveConstants.brownoutVoltage);
-
-        SmartDashboard.putData("auto selector", autoSelector);
-
-        // Add programs to auto selector.
-        /*autoSelector.setDefaultOption("Do Nothing", null);
-        autoSelector.addOption("Example Auto", new ExampleAuto(swerveSys));
-        autoSelector.addOption("AllianceFour", new AllianceFour(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-        autoSelector.addOption("AmpMidlineTwo", new AmpMidlineTwo(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-        //autoSelector.addOption("AmpMidlineThree", new AmpMidlineThree(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-        // autoSelector.addOption("PiHiThreePiece", new PiHiThreePiece(swerveSys, feederSys, rollerSys, pivotSys));
-        autoSelector.addOption("SmashySmash", new SmashySmash(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-        // autoSelector.addOption("TestFive", new TestFivePiece(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-        autoSelector.addOption("AllianceFive", new AllianceFive(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-        // autoSelector.addOption("SecondPickThree", new SecondPickThree(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-        autoSelector.addOption("SourceMidlineTwo", new SourceMidlineTwo(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-*/
-        configDriverBindings();
-        configOperatorBindings();
-
-        //lightsSys.setDefaultCommand(new LightsDefaultCmd(lightsSys, rollerSys::hasNote));
-    }
-
-    private void configOperatorBindings() {
-        // rollerSys.setDefaultCommand(new RollersManualCmd(
-        //     () -> (operatorController.getRightTriggerAxis() * RollerConstants.manualFirePower) - 
-        //           (operatorController.getLeftTriggerAxis() * RollerConstants.manualIntakePower),
-        //     rollerSys));
-
-        /*pivotSys.setDefaultCommand(new PivotManualCmd( 
-            () -> MathUtil.applyDeadband((operatorController.getLeftY()), ControllerConstants.joystickDeadband),
-            pivotSys));*/
-
-        //operatorController.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, ControllerConstants.triggerPressedThreshhold).onFalse(new RollersStopCmd(rollerSys));
-
-        //operatorController.leftBumper().onTrue(new FeederInCmd(feederSys)).onFalse(new FeederStopCmd(feederSys));
-
-        //operatorController.axisGreaterThan(XboxController.Axis.kRightTrigger.value, ControllerConstants.triggerPressedThreshhold).onFalse(new RollersStopCmd(rollerSys));
-
-        //operatorController.rightBumper().onTrue(new FeederFeedCmd(feederSys)).onFalse(new FeederStopCmd(feederSys));
-
-        //operatorController.a().onTrue(new AutoAmpFireCmd(feederSys, rollerSys, pivotSys, spacebarSys));
+    private final static LightsSys lightsSys = new LightsSys();
+        private final LiftSys liftSys = new LiftSys();
         
-        /*
-        operatorController.b()
-            .onTrue(new AutoSpeakerFireCmd(feederSys, rollerSys, pivotSys, swerveSys))
-            .onFalse(new RollersStopCmd(rollerSys))
-            .onFalse(new PivotHomePresetCmd(pivotSys))
-            .onFalse(new FeederStopCmd(feederSys));
-        */
-
-        operatorController.start().toggleOnTrue(new PartyModeCmd(lightsSys));
+        //Initialize joysticks.
+        private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.driverGamepadPort);
+        public final static CommandXboxController operatorController = new CommandXboxController(ControllerConstants.operatorGamepadPort);
+    
+        //Initialize auto selector.
+        SendableChooser<Command> autoSelector = new SendableChooser<Command>();
+    
+        public RobotContainer() {
+            RobotController.setBrownoutVoltage(DriveConstants.brownoutVoltage);
+    
+            SmartDashboard.putData("auto selector", autoSelector);
+    
+            // Add programs to auto selector.
+            /*autoSelector.setDefaultOption("Do Nothing", null);
+            autoSelector.addOption("Example Auto", new ExampleAuto(swerveSys));
+            autoSelector.addOption("AllianceFour", new AllianceFour(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
+            autoSelector.addOption("AmpMidlineTwo", new AmpMidlineTwo(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
+            //autoSelector.addOption("AmpMidlineThree", new AmpMidlineThree(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
+            // autoSelector.addOption("PiHiThreePiece", new PiHiThreePiece(swerveSys, feederSys, rollerSys, pivotSys));
+            autoSelector.addOption("SmashySmash", new SmashySmash(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
+            // autoSelector.addOption("TestFive", new TestFivePiece(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
+            autoSelector.addOption("AllianceFive", new AllianceFive(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
+            // autoSelector.addOption("SecondPickThree", new SecondPickThree(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
+            autoSelector.addOption("SourceMidlineTwo", new SourceMidlineTwo(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
+    */
+            configDriverBindings();
+            configOperatorBindings();
+    
+            //lightsSys.setDefaultCommand(new LightsDefaultCmd(lightsSys, rollerSys::hasNote));
+        }
+    
+        public static void configOperatorBindings() {
+    
+            //     () -> (operatorController.getRightTriggerAxis() * RollerConstants.manualFirePower) - 
+            //           (operatorController.getLeftTriggerAxis() * RollerConstants.manualIntakePower),
+            //     rollerSys));
+    
+            /*pivotSys.setDefaultCommand(new PivotManualCmd( 
+                () -> MathUtil.applyDeadband((operatorController.getLeftY()), ControllerConstants.joystickDeadband),
+                pivotSys));*/
+    
+            //operatorController.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, ControllerConstants.triggerPressedThreshhold).onFalse(new RollersStopCmd(rollerSys));
+    
+            //operatorController.leftBumper().onTrue(new FeederInCmd(feederSys)).onFalse(new FeederStopCmd(feederSys));
+    
+            //operatorController.axisGreaterThan(XboxController.Axis.kRightTrigger.value, ControllerConstants.triggerPressedThreshhold).onFalse(new RollersStopCmd(rollerSys));
+    
+            //operatorController.rightBumper().onTrue(new FeederFeedCmd(feederSys)).onFalse(new FeederStopCmd(feederSys));
+    
+            //operatorController.a().onTrue(new AutoAmpFireCmd(feederSys, rollerSys, pivotSys, spacebarSys));
+            
+            /*
+            operatorController.b()
+                .onTrue(new AutoSpeakerFireCmd(feederSys, rollerSys, pivotSys, swerveSys))
+                .onFalse(new RollersStopCmd(rollerSys))
+                .onFalse(new PivotHomePresetCmd(pivotSys))
+                .onFalse(new FeederStopCmd(feederSys));
+            */
+    
+            operatorController.start().toggleOnTrue(new PartyModeCmd(lightsSys));
     }
 
     public void configDriverBindings() {
@@ -118,11 +115,12 @@ public class RobotContainer {
         driverController.rightBumper().onTrue(new AutoSourceIntakeCmd(pivotSys, feederSys, rollerSys)).onFalse(new AutoAllHomeCmd(pivotSys, feederSys, rollerSys));
         */
         
-        driverController.a().whileTrue(new TurnToHeadingCmd(Rotation2d.fromDegrees(170), swerveSys));
-        driverController.b().whileTrue(new TurnToHeadingCmd(Rotation2d.fromDegrees(120), swerveSys));
-        driverController.x().whileTrue(new TurnToHeadingCmd(Rotation2d.fromDegrees(90), swerveSys));
-        driverController.y().whileTrue(new AimToSpeakerCmd(swerveSys));
-
+        driverController.y().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(180), swerveSys));
+        driverController.b().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(120), swerveSys));
+        driverController.rightBumper().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(60), swerveSys));
+        driverController.a().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(0), swerveSys));
+        driverController.leftBumper().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-60), swerveSys));
+        driverController.x().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-120), swerveSys));
     }
 
     public Command getAutonomousCommand() {
