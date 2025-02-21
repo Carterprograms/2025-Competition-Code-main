@@ -61,6 +61,8 @@ public class Constants {
         public static final double triggerPressedThreshhold = 0.25;
 
         public static final int driverRightJoystick = 1;
+
+        public static final int buttonPanelPort = 2;
     }
     
     public static final class DriveConstants {

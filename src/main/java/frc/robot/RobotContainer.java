@@ -6,12 +6,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drivetrain.ArcadeDriveCmd;
+import frc.robot.commands.drivetrain.ButtonTestingCmd;
 import frc.robot.commands.drivetrain.LockCmd;
 import frc.robot.commands.drivetrain.ReefPositioningCmd;
 import frc.robot.commands.drivetrain.TurnToHeadingCmd;
@@ -21,17 +23,19 @@ import frc.robot.commands.lights.PartyModeCmd;
 import frc.robot.subsystems.LightsSys;
 import frc.robot.subsystems.SwerveSys;
 import frc.robot.subsystems.LiftSys;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Joystick;
 
 public class RobotContainer {
-    
     // Initialize subsystems.
     private final SwerveSys swerveSys = new SwerveSys();
     private final static LightsSys lightsSys = new LightsSys();
-        private final LiftSys liftSys = new LiftSys();
-        
+    private final LiftSys liftSys = new LiftSys();
+    
         //Initialize joysticks.
         private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.driverGamepadPort);
         public final static CommandXboxController operatorController = new CommandXboxController(ControllerConstants.operatorGamepadPort);
+        public static Joystick ButtonPanel = new Joystick(ControllerConstants.buttonPanelPort);
     
         //Initialize auto selector.
         SendableChooser<Command> autoSelector = new SendableChooser<Command>();
@@ -89,6 +93,20 @@ public class RobotContainer {
             */
     
             operatorController.start().toggleOnTrue(new PartyModeCmd(lightsSys));
+    }
+
+    public void buttonPanelBindings() {
+        JoystickButton lvl4ButtonRight = new JoystickButton(ButtonPanel, 0);
+        JoystickButton lvl4ButtonLeft = new JoystickButton(ButtonPanel, 1);
+        JoystickButton lvl3ButtonRight = new JoystickButton(ButtonPanel, 2);
+        JoystickButton lvl3ButtonLeft = new JoystickButton(ButtonPanel, 3);
+        JoystickButton lvl2ButtonRight = new JoystickButton(ButtonPanel, 4);
+        JoystickButton lvl2ButtonLeft = new JoystickButton(ButtonPanel, 5);
+        JoystickButton lvl1ButtonRight = new JoystickButton(ButtonPanel, 6);
+        JoystickButton lvl1ButtonLeft = new JoystickButton(ButtonPanel, 7);
+        Joystick joystick = new Joystick(8);
+        JoystickButton conveyorButton = new JoystickButton(ButtonPanel, 9);
+        JoystickButton coralReleaseButton = new JoystickButton(ButtonPanel, 10);
     }
 
     public void configDriverBindings() {
