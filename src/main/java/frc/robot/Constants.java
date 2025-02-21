@@ -166,6 +166,9 @@ public class Constants {
         public static final double autoAimkP = 10.9;
         public static final double autoAimkD = 0.5;
 
+        public static final double autoLiftkP = 0;
+        public static final double autoLiftkD = 0;
+
         public static final double autoAimToleranceDeg = 0.2;
 
         public static final double autoAimTurnSpeedRadPerSec = 2.0 * Math.PI;
@@ -176,6 +179,9 @@ public class Constants {
 
         public static final double driveToAmpMaxVelMetersPerSec = 4.0;
         public static final double driveToAmpMaxAccelMetersPerSecSq = 3.0;
+
+        public static final double liftMaxVelMetersPerSec = 0.2;
+        public static final double liftMaxAccelMeterPerSecSq = 0.1;
 
         public static final double subwooferShotThreshold = 1.8;
 
@@ -322,8 +328,8 @@ public class Constants {
     }
 
     public class VisionConstants {
-        public static final String frontLimelightName = "limelight-intake";
-        public static final String backLimelightName = "limelight-shooter";
+        public static final String frontLimelightName = "limelight";
+        public static final String backLimelightName = "limelight";
 
         public static final double targetAreaPercentThreshold = 0.15;
     }
@@ -332,6 +338,8 @@ public class Constants {
         public static final Translation2d blueAllianceSpeakerPose = new Translation2d(0.0, 5.55);
         public static final Translation2d redAllianceSpeakerPose = new Translation2d(16.54, 5.55);
 
-        public static final double speakerTargetHeightMeters = 2.03;
+        public static final Translation2d blueReefPose = new Translation2d(4.5, 4);
+
+        public static final double speakerTargetHeightMeters = 0.0762;
     }
 }

@@ -121,6 +121,7 @@ public class RobotContainer {
         driverController.a().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(0), swerveSys));
         driverController.leftBumper().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-60), swerveSys));
         driverController.x().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-120), swerveSys));
+        driverController.rightStick().whileTrue(new AimToReefCmd(swerveSys));
     }
 
     public Command getAutonomousCommand() {

@@ -19,7 +19,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.subsystems.SwerveSys;
 
-public class AimToSpeakerCmd extends Command {
+public class AimToReefCmd extends Command {
 
     private final SwerveSys swerveSys;
 
@@ -27,7 +27,7 @@ public class AimToSpeakerCmd extends Command {
 
     private final ProfiledPIDController aimController;
 
-    public AimToSpeakerCmd(SwerveSys swerveSys) {
+    public AimToReefCmd(SwerveSys swerveSys) {
         this.swerveSys = swerveSys;
 
         aimController = new ProfiledPIDController(

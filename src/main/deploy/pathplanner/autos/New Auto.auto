@@ -7,7 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "Blue Center Path #1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreCmd"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue Center Path #2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCmd"
           }
         }
       ]
