@@ -15,6 +15,10 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drivetrain.ArcadeDriveCmd;
 import frc.robot.commands.drivetrain.ButtonTestingCmd;
 import frc.robot.commands.drivetrain.LockCmd;
+import frc.robot.commands.drivetrain.Lvl1Cmd;
+import frc.robot.commands.drivetrain.Lvl2Cmd;
+import frc.robot.commands.drivetrain.Lvl3Cmd;
+import frc.robot.commands.drivetrain.Lvl4Cmd;
 import frc.robot.commands.drivetrain.ReefPositioningCmd;
 import frc.robot.commands.drivetrain.TurnToHeadingCmd;
 import frc.robot.commands.drivetrain.AimToReefCmd;
@@ -25,6 +29,7 @@ import frc.robot.subsystems.SwerveSys;
 import frc.robot.subsystems.LiftSys;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
+import com.pathplanner.lib.auto.NamedCommands;
 
 public class RobotContainer {
     // Initialize subsystems.
@@ -42,58 +47,19 @@ public class RobotContainer {
     
         public RobotContainer() {
             RobotController.setBrownoutVoltage(DriveConstants.brownoutVoltage);
+
+            NamedCommands.registerCommand("lvl4", new Lvl4Cmd(liftSys));
+            NamedCommands.registerCommand("lvl3", new Lvl3Cmd(liftSys));
+            NamedCommands.registerCommand("lvl2", new Lvl2Cmd(liftSys));
+            NamedCommands.registerCommand("lvl1", new Lvl1Cmd(liftSys));
     
             SmartDashboard.putData("auto selector", autoSelector);
-    
-            // Add programs to auto selector.
-            /*autoSelector.setDefaultOption("Do Nothing", null);
-            autoSelector.addOption("Example Auto", new ExampleAuto(swerveSys));
-            autoSelector.addOption("AllianceFour", new AllianceFour(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-            autoSelector.addOption("AmpMidlineTwo", new AmpMidlineTwo(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-            //autoSelector.addOption("AmpMidlineThree", new AmpMidlineThree(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-            // autoSelector.addOption("PiHiThreePiece", new PiHiThreePiece(swerveSys, feederSys, rollerSys, pivotSys));
-            autoSelector.addOption("SmashySmash", new SmashySmash(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-            // autoSelector.addOption("TestFive", new TestFivePiece(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-            autoSelector.addOption("AllianceFive", new AllianceFive(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-            // autoSelector.addOption("SecondPickThree", new SecondPickThree(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-            autoSelector.addOption("SourceMidlineTwo", new SourceMidlineTwo(swerveSys, feederSys, rollerSys, pivotSys, spacebarSys));
-    */
+
             configDriverBindings();
-            configOperatorBindings();
+            buttonPanelBindings();
     
-            //lightsSys.setDefaultCommand(new LightsDefaultCmd(lightsSys, rollerSys::hasNote));
         }
-    
-        public static void configOperatorBindings() {
-    
-            //     () -> (operatorController.getRightTriggerAxis() * RollerConstants.manualFirePower) - 
-            //           (operatorController.getLeftTriggerAxis() * RollerConstants.manualIntakePower),
-            //     rollerSys));
-    
-            /*pivotSys.setDefaultCommand(new PivotManualCmd( 
-                () -> MathUtil.applyDeadband((operatorController.getLeftY()), ControllerConstants.joystickDeadband),
-                pivotSys));*/
-    
-            //operatorController.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, ControllerConstants.triggerPressedThreshhold).onFalse(new RollersStopCmd(rollerSys));
-    
-            //operatorController.leftBumper().onTrue(new FeederInCmd(feederSys)).onFalse(new FeederStopCmd(feederSys));
-    
-            //operatorController.axisGreaterThan(XboxController.Axis.kRightTrigger.value, ControllerConstants.triggerPressedThreshhold).onFalse(new RollersStopCmd(rollerSys));
-    
-            //operatorController.rightBumper().onTrue(new FeederFeedCmd(feederSys)).onFalse(new FeederStopCmd(feederSys));
-    
-            //operatorController.a().onTrue(new AutoAmpFireCmd(feederSys, rollerSys, pivotSys, spacebarSys));
-            
-            /*
-            operatorController.b()
-                .onTrue(new AutoSpeakerFireCmd(feederSys, rollerSys, pivotSys, swerveSys))
-                .onFalse(new RollersStopCmd(rollerSys))
-                .onFalse(new PivotHomePresetCmd(pivotSys))
-                .onFalse(new FeederStopCmd(feederSys));
-            */
-    
-            operatorController.start().toggleOnTrue(new PartyModeCmd(lightsSys));
-    }
+
 
     public void buttonPanelBindings() {
         JoystickButton lvl4ButtonRight = new JoystickButton(ButtonPanel, 0);
@@ -107,6 +73,11 @@ public class RobotContainer {
         Joystick joystick = new Joystick(8);
         JoystickButton conveyorButton = new JoystickButton(ButtonPanel, 9);
         JoystickButton coralReleaseButton = new JoystickButton(ButtonPanel, 10);
+
+        lvl4ButtonRight.whileTrue(new Lvl4Cmd(liftSys));
+        lvl3ButtonRight.whileTrue(new Lvl3Cmd(liftSys));
+        lvl2ButtonRight.whileTrue(new Lvl2Cmd(liftSys));
+        lvl1ButtonRight.whileTrue(new Lvl1Cmd(liftSys));
     }
 
     public void configDriverBindings() {
@@ -122,8 +93,8 @@ public class RobotContainer {
 
         //Swerve locking system
 
-        //driverController.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, ControllerConstants.triggerPressedThreshhold)
-        //    .whileTrue(new LockCmd(swerveSys));
+        driverController.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, ControllerConstants.triggerPressedThreshhold)
+            .whileTrue(new LockCmd(swerveSys));
         
         //driverController.axisGreaterThan(XboxController.Axis.kRightTrigger.value, ControllerConstants.triggerPressedThreshhold)
         //  .onTrue(new AutoGroundIntakeCmd(pivotSys, feederSys, rollerSys, spacebarSys)).onFalse(new AutoAllHomeCmd(pivotSys, feederSys, rollerSys));
@@ -140,6 +111,8 @@ public class RobotContainer {
         driverController.leftBumper().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-60), swerveSys));
         driverController.x().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-120), swerveSys));
         driverController.rightStick().whileTrue(new AimToReefCmd(swerveSys));
+
+       //driverController.leftStick().toggleOnTrue(new Lvl4Cmd(liftSys));
     }
 
     public Command getAutonomousCommand() {

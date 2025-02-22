@@ -22,4 +22,14 @@ public class LiftCmd extends Command {
         AutoConstants.liftMaxAccelMeterPerSecSq));
     }
 
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void execute() {
+        
+    }
+
 }

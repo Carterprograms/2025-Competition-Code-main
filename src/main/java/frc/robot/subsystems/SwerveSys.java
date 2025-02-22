@@ -19,6 +19,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.CANDevices;
@@ -172,6 +174,14 @@ public class SwerveSys extends SubsystemBase {
     );
     }
 
+    SwerveModuleState[] states = new SwerveModuleState[] {
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState()
+    };
+    StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
     // This method will be called once per scheduler run
     @Override
     public void periodic() {
@@ -230,7 +240,7 @@ public class SwerveSys extends SubsystemBase {
             ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
 
             // Uses kinematics (wheel placements) to convert overall robot state to array of individual module states.
-            SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(discreteSpeeds);
+            final SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(discreteSpeeds);
             
             // Makes sure the wheels don't try to spin faster than the maximum speed possible
             SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxModuleSpeedMetersPerSec);
@@ -238,7 +248,7 @@ public class SwerveSys extends SubsystemBase {
             setModuleStates(states);
         }
     }
-
+    
     public void runCharacterizationVolts(double volts) {
         frontLeftMod.runCharacterization(volts);
         frontRightMod.runCharacterization(volts);
@@ -314,6 +324,8 @@ public class SwerveSys extends SubsystemBase {
             new SwerveModuleState(backRightMod.getVelocityMetersPerSec(), backRightMod.getSteerEncAngle())
         };
     }
+
+
 
     /**
      * Returns an array of CANcoder angles of the modules. The order is FL, FR, BL, BR.
