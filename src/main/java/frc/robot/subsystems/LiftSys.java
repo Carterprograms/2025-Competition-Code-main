@@ -2,13 +2,15 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.RobotContainer;
 
 import frc.robot.Constants.CANDevices;
 
-public class LiftSys {
+public class LiftSys extends SubsystemBase {
     
     public static SparkMax m_leftLiftMtr = new SparkMax(CANDevices.m_leftLiftMtrId, MotorType.kBrushless);
     public static SparkMax m_rightLiftMtr = new SparkMax(CANDevices.m_rightLiftMtrId, MotorType.kBrushless);
@@ -82,7 +84,7 @@ public class LiftSys {
             m_leftliftEnc.setPosition(100);
             m_rightliftEnc.setPosition(100);
         }
-        else{
+        else {
            m_leftliftEnc.setPosition(0);
            m_rightliftEnc.setPosition(0); 
             System.out.println("Lift at 0");
@@ -109,4 +111,10 @@ public class LiftSys {
             lvl1();
             }
     }
+
+    @Override
+    public void periodic() {
+        
+    }
+
 }

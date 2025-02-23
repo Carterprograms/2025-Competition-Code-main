@@ -175,13 +175,16 @@ public class SwerveSys extends SubsystemBase {
     }
 
     SwerveModuleState[] states = new SwerveModuleState[] {
-        new SwerveModuleState(),
-        new SwerveModuleState(),
-        new SwerveModuleState(),
-        new SwerveModuleState()
-    };
+        new SwerveModuleState(frontLeftMod.getVelocityMetersPerSec(), frontLeftMod.getSteerEncAngle()),
+        new SwerveModuleState(frontRightMod.getVelocityMetersPerSec(), frontRightMod.getSteerEncAngle()),
+        new SwerveModuleState(backLeftMod.getVelocityMetersPerSec(), backLeftMod.getSteerEncAngle()),
+        new SwerveModuleState(backRightMod.getVelocityMetersPerSec(), backRightMod.getSteerEncAngle())
+        };
+        
+
     StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+    
     // This method will be called once per scheduler run
     @Override
     public void periodic() {
@@ -194,6 +197,8 @@ public class SwerveSys extends SubsystemBase {
                 poseEstimator.addVisionMeasurement(limelightPose.get(), limelightPoseEstimator.getCaptureTimestamp());
             }
         }
+        publisher.set(states);
+        System.out.println(getModuleStates());
     }
     
     /**

@@ -78,6 +78,7 @@ public class RobotContainer {
         lvl3ButtonRight.whileTrue(new Lvl3Cmd(liftSys));
         lvl2ButtonRight.whileTrue(new Lvl2Cmd(liftSys));
         lvl1ButtonRight.whileTrue(new Lvl1Cmd(liftSys));
+        System.out.println(joystick.getX());
     }
 
     public void configDriverBindings() {

@@ -48,6 +48,8 @@ public class Constants {
         public static final int rightClimberMtrId = 25;
         public static final int leftClimberMtrId = 26;
 
+        public static final int intakeOutMtrId = 30;
+
         public static final int spacebarMtrId = 27;
     }
 
