@@ -5,16 +5,20 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.CANDevices;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-public class IntakeSys {
-    
-    public static SparkMax m_rightIntakeOutMtr = new SparkMax(CANDevices.rightIntakeOutMtrId, MotorType.kBrushed);
-    public static SparkMax m_leftIntakeOutMtr = new SparkMax(CANDevices.leftIntakeOutMtrId, MotorType.kBrushed);
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-    public static RelativeEncoder m_rightIntakeOutEnc = m_rightIntakeOutMtr.getEncoder();
-    public static RelativeEncoder m_leftIntakeOutEnc = m_leftIntakeOutMtr.getEncoder();
+public class IntakeSys extends SubsystemBase {
+    
+    public static SparkMax m_rightIntakeMtr = new SparkMax(CANDevices.rightIntakeOutMtrId, MotorType.kBrushed);
+    public static SparkMax m_leftIntakeMtr = new SparkMax(CANDevices.leftIntakeOutMtrId, MotorType.kBrushed);
+
+    public static RelativeEncoder m_rightIntakeEnc = m_rightIntakeMtr.getEncoder();
+    public static RelativeEncoder m_leftIntakeEnc = m_leftIntakeMtr.getEncoder();
 
     private boolean Rintakeout = false;
     private boolean Lintakeout = false;
+    private boolean Lintakein = false;
+    private boolean Rintakein = false;
 
     public boolean Rintakeout() {
         return Rintakeout = true;
@@ -24,23 +28,40 @@ public class IntakeSys {
         return Lintakeout = true;
     }
 
+    public boolean Rintakein() {
+        return Rintakein = true;
+    }
+
+    public boolean Lintakein() {
+        return Rintakein = true;
+    }
+
     public IntakeSys() {
 
-        m_rightIntakeOutEnc.setPosition(0);
-        m_leftIntakeOutEnc.setPosition(0);
+        m_rightIntakeEnc.setPosition(0);
+        m_leftIntakeEnc.setPosition(0);
         
+    }
+
+    @Override
+    public void periodic() {
         if(
-            Rintakeout = true
+            Rintakeout == true
         ) {
-            m_rightIntakeOutEnc.setPosition(40);
+            m_rightIntakeEnc.setPosition(40);
+            Rintakeout = false;
         }
         else if(
-            Lintakeout = true
+            Lintakeout == true
         ) {
-            m_leftIntakeOutEnc.setPosition(40);
+            m_leftIntakeEnc.setPosition(40);
+            Lintakeout = false;
         }
-        else{
-            m_rightIntakeOutEnc.setPosition(0);
+        else if (Rintakein == true) {
+            m_rightIntakeEnc.setPosition(0);
+        }
+        else if (Lintakein == true) {
+            m_rightIntakeEnc.setPosition(0);
         }
     }
 

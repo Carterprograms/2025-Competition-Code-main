@@ -101,13 +101,17 @@ public class RobotContainer {
         JoystickButton lvl1ButtonRight = new JoystickButton(ButtonPanel, 6);
         JoystickButton lvl1ButtonLeft = new JoystickButton(ButtonPanel, 7);
         Joystick joystick = new Joystick(8);
-        JoystickButton conveyorButton = new JoystickButton(ButtonPanel, 9);
+        JoystickButton conveyorRunButton = new JoystickButton(ButtonPanel, 9);
+        JoystickButton conveyorControl = new JoystickButton(ButtonPanel, 11);
         JoystickButton coralReleaseButton = new JoystickButton(ButtonPanel, 10);
 
         lvl4ButtonRight.whileTrue(new Lvl4Cmd(liftSys));
         lvl3ButtonRight.whileTrue(new Lvl3Cmd(liftSys));
         lvl2ButtonRight.whileTrue(new Lvl2Cmd(liftSys));
         lvl1ButtonRight.whileTrue(new Lvl1Cmd(liftSys));
+        coralReleaseButton.toggleOnTrue(new ReleaseCoralCmd(endEffectorSys));
+        
+        
     }
 
     public void configDriverBindings() {
@@ -132,7 +136,6 @@ public class RobotContainer {
         driverController.leftBumper().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-60), swerveSys));
         driverController.x().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-120), swerveSys));
         driverController.rightStick().whileTrue(new AimToReefCmd(swerveSys));
-        driverController.leftBumper().toggleOnTrue(new ReleaseCoralCmd(endEffectorSys));
     }
 
     public Command getAutonomousCommand() {
