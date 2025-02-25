@@ -32,7 +32,7 @@ public class ConveyorSys extends SubsystemBase {
             ConveyorFwd = false;
             ConveyorStp = true;
         }
-        else if (ConveyorBwd == true
+        else if (ConveyorBwd == true && ConveyorFwd == true
         ) {
             m_conveyorMtr.set(-1);
             ConveyorBwd = false;
