@@ -21,7 +21,6 @@ public class Lvl4Cmd extends Command {
     @Override
     public void execute() {
         liftSys.lvl4();
-        System.out.println("lvl4");
     }
 
     // Called once the command ends or is interrupted.

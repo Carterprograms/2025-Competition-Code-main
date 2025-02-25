@@ -6,24 +6,24 @@
     "GLOBAL": {
       "font": "Proggy Dotted",
       "fps": "120",
-      "height": "1009",
-      "maximized": "1",
+      "height": "720",
+      "maximized": "0",
       "style": "0",
       "userScale": "2",
-      "width": "1920",
-      "xpos": "0",
-      "ypos": "23"
+      "width": "1280",
+      "xpos": "-32000",
+      "ypos": "-32000"
     }
   },
   "Window": {
     "###FMS": {
       "Collapsed": "0",
-      "Pos": "5,540",
+      "Pos": "5,518",
       "Size": "283,140"
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "566,531",
+      "Pos": "275,61",
       "Size": "796,240"
     },
     "###NetworkTables": {
@@ -38,7 +38,7 @@
     },
     "###Other Devices": {
       "Collapsed": "0",
-      "Pos": "1432,111",
+      "Pos": "1129,111",
       "Size": "250,695"
     },
     "###System Joysticks": {

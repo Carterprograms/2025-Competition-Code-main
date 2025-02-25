@@ -3,11 +3,11 @@ package frc.robot.commands.drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSys;
 
-public class IntakeOutCmd extends Command {
+public class RIntakeOutCmd extends Command {
 
     private final IntakeSys intakeSys;
 
-    public IntakeOutCmd(IntakeSys intakeSys) {
+    public RIntakeOutCmd(IntakeSys intakeSys) {
         this.intakeSys = intakeSys;
     }
 
@@ -20,7 +20,7 @@ public class IntakeOutCmd extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        intakeSys.intakeout();
+        intakeSys.Rintakeout();
     }
 
     // Called once the command ends or is interrupted.

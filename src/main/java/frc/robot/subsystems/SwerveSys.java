@@ -198,7 +198,7 @@ public class SwerveSys extends SubsystemBase {
             }
         }
         publisher.set(states);
-        System.out.println(getModuleStates());
+        //System.out.println(getModuleStates());
     }
     
     /**

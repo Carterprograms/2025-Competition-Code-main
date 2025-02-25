@@ -7,27 +7,40 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class IntakeSys {
     
-    public static SparkMax m_intakeOutMtr = new SparkMax(CANDevices.intakeOutMtrId, MotorType.kBrushed);
+    public static SparkMax m_rightIntakeOutMtr = new SparkMax(CANDevices.rightIntakeOutMtrId, MotorType.kBrushed);
+    public static SparkMax m_leftIntakeOutMtr = new SparkMax(CANDevices.leftIntakeOutMtrId, MotorType.kBrushed);
 
-    public static RelativeEncoder m_intakeOutEnc = m_intakeOutMtr.getEncoder();
+    public static RelativeEncoder m_rightIntakeOutEnc = m_rightIntakeOutMtr.getEncoder();
+    public static RelativeEncoder m_leftIntakeOutEnc = m_leftIntakeOutMtr.getEncoder();
 
-    private boolean intakeout = false;
+    private boolean Rintakeout = false;
+    private boolean Lintakeout = false;
 
-    public boolean intakeout() {
-        return intakeout = true;
+    public boolean Rintakeout() {
+        return Rintakeout = true;
+    }
+
+    public boolean Lintakeout() {
+        return Lintakeout = true;
     }
 
     public IntakeSys() {
 
-        m_intakeOutEnc.setPosition(0);
+        m_rightIntakeOutEnc.setPosition(0);
+        m_leftIntakeOutEnc.setPosition(0);
         
         if(
-            intakeout = true
+            Rintakeout = true
         ) {
-            m_intakeOutEnc.setPosition(40);
+            m_rightIntakeOutEnc.setPosition(40);
+        }
+        else if(
+            Lintakeout = true
+        ) {
+            m_leftIntakeOutEnc.setPosition(40);
         }
         else{
-            m_intakeOutEnc.setPosition(0);
+            m_rightIntakeOutEnc.setPosition(0);
         }
     }
 

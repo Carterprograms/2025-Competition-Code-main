@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.RobotController;
@@ -13,19 +14,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drivetrain.ArcadeDriveCmd;
-import frc.robot.commands.drivetrain.ButtonTestingCmd;
 import frc.robot.commands.drivetrain.LockCmd;
+import frc.robot.commands.drivetrain.Lvl0Cmd;
 import frc.robot.commands.drivetrain.Lvl1Cmd;
 import frc.robot.commands.drivetrain.Lvl2Cmd;
 import frc.robot.commands.drivetrain.Lvl3Cmd;
 import frc.robot.commands.drivetrain.Lvl4Cmd;
 import frc.robot.commands.drivetrain.ReefPositioningCmd;
+import frc.robot.commands.drivetrain.ReleaseCoralCmd;
 import frc.robot.commands.drivetrain.TurnToHeadingCmd;
 import frc.robot.commands.drivetrain.AimToReefCmd;
 import frc.robot.commands.lights.LightsDefaultCmd;
 import frc.robot.commands.lights.PartyModeCmd;
 import frc.robot.subsystems.LightsSys;
 import frc.robot.subsystems.SwerveSys;
+import frc.robot.subsystems.EndEffectorSys;
 import frc.robot.subsystems.LiftSys;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
@@ -36,28 +39,55 @@ public class RobotContainer {
     private final SwerveSys swerveSys = new SwerveSys();
     private final static LightsSys lightsSys = new LightsSys();
     private final LiftSys liftSys = new LiftSys();
+    private final EndEffectorSys endEffectorSys = new EndEffectorSys();
     
-        //Initialize joysticks.
-        private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.driverGamepadPort);
-        public final static CommandXboxController operatorController = new CommandXboxController(ControllerConstants.operatorGamepadPort);
-        public static Joystick ButtonPanel = new Joystick(ControllerConstants.buttonPanelPort);
-    
-        //Initialize auto selector.
-        SendableChooser<Command> autoSelector = new SendableChooser<Command>();
-    
-        public RobotContainer() {
-            RobotController.setBrownoutVoltage(DriveConstants.brownoutVoltage);
+    //Initialize joysticks.
+    private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.driverGamepadPort);
+    public final static CommandXboxController operatorController = new CommandXboxController(ControllerConstants.operatorGamepadPort);
+    public static Joystick ButtonPanel = new Joystick(ControllerConstants.buttonPanelPort);
 
-            NamedCommands.registerCommand("lvl4", new Lvl4Cmd(liftSys));
-            NamedCommands.registerCommand("lvl3", new Lvl3Cmd(liftSys));
-            NamedCommands.registerCommand("lvl2", new Lvl2Cmd(liftSys));
-            NamedCommands.registerCommand("lvl1", new Lvl1Cmd(liftSys));
+    //Name Commands
+    private final Lvl0Cmd lvl0Cmd;
+    private final Lvl1Cmd lvl1Cmd;
+    private final Lvl2Cmd lvl2Cmd;
+    private final Lvl3Cmd lvl3Cmd;
+    private final Lvl4Cmd lvl4Cmd;
+    private final ReleaseCoralCmd releaseCoralCmd;
     
-            SmartDashboard.putData("auto selector", autoSelector);
+    //Initialize auto selector.
+    SendableChooser<Command> autoSelector = new SendableChooser<Command>();
+    
+    public RobotContainer() {
+        RobotController.setBrownoutVoltage(DriveConstants.brownoutVoltage);
 
-            configDriverBindings();
-            buttonPanelBindings();
+        //Initalize Commands
+        lvl0Cmd = new Lvl0Cmd(liftSys);
+        lvl1Cmd = new Lvl1Cmd(liftSys);
+        lvl2Cmd = new Lvl2Cmd(liftSys);
+        lvl3Cmd = new Lvl3Cmd(liftSys);
+        lvl4Cmd = new Lvl4Cmd(liftSys);
+        releaseCoralCmd = new ReleaseCoralCmd(endEffectorSys);
+
+        //Add Requirements
+        lvl0Cmd.addRequirements(liftSys);
+        lvl1Cmd.addRequirements(liftSys);
+        lvl2Cmd.addRequirements(liftSys);
+        lvl3Cmd.addRequirements(liftSys);
+        lvl4Cmd.addRequirements(liftSys);
+        releaseCoralCmd.addRequirements(endEffectorSys);
+            
+        //Register Commands to PathPlanner
+        NamedCommands.registerCommand("lvl4", new Lvl4Cmd(liftSys));
+        NamedCommands.registerCommand("lvl3", new Lvl3Cmd(liftSys));
+        NamedCommands.registerCommand("lvl2", new Lvl2Cmd(liftSys));
+        NamedCommands.registerCommand("lvl1", new Lvl1Cmd(liftSys));
+        NamedCommands.registerCommand("lvl0", new Lvl0Cmd(liftSys));
+        NamedCommands.registerCommand("releaseCoral", new ReleaseCoralCmd(endEffectorSys));
     
+        SmartDashboard.putData("auto selector", autoSelector);
+
+        configDriverBindings();
+        buttonPanelBindings();
         }
 
 
@@ -78,7 +108,6 @@ public class RobotContainer {
         lvl3ButtonRight.whileTrue(new Lvl3Cmd(liftSys));
         lvl2ButtonRight.whileTrue(new Lvl2Cmd(liftSys));
         lvl1ButtonRight.whileTrue(new Lvl1Cmd(liftSys));
-        System.out.println(joystick.getX());
     }
 
     public void configDriverBindings() {
@@ -93,17 +122,8 @@ public class RobotContainer {
         driverController.start().onTrue(Commands.runOnce(() -> swerveSys.resetHeading()));
 
         //Swerve locking system
-
         driverController.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, ControllerConstants.triggerPressedThreshhold)
             .whileTrue(new LockCmd(swerveSys));
-        
-        //driverController.axisGreaterThan(XboxController.Axis.kRightTrigger.value, ControllerConstants.triggerPressedThreshhold)
-        //  .onTrue(new AutoGroundIntakeCmd(pivotSys, feederSys, rollerSys, spacebarSys)).onFalse(new AutoAllHomeCmd(pivotSys, feederSys, rollerSys));
-
-        /*driverController.leftBumper().onTrue(new AutoFeedCmd(feederSys, rollerSys, pivotSys));
-
-        driverController.rightBumper().onTrue(new AutoSourceIntakeCmd(pivotSys, feederSys, rollerSys)).onFalse(new AutoAllHomeCmd(pivotSys, feederSys, rollerSys));
-        */
         
         driverController.y().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(180), swerveSys));
         driverController.b().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(120), swerveSys));
@@ -112,8 +132,7 @@ public class RobotContainer {
         driverController.leftBumper().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-60), swerveSys));
         driverController.x().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-120), swerveSys));
         driverController.rightStick().whileTrue(new AimToReefCmd(swerveSys));
-
-       //driverController.leftStick().toggleOnTrue(new Lvl4Cmd(liftSys));
+        driverController.leftBumper().toggleOnTrue(new ReleaseCoralCmd(endEffectorSys));
     }
 
     public Command getAutonomousCommand() {
