@@ -43,7 +43,7 @@ public class RobotContainer {
     
     //Initialize joysticks.
     private final CommandXboxController driverController = new CommandXboxController(ControllerConstants.driverGamepadPort);
-    public final static CommandXboxController operatorController = new CommandXboxController(ControllerConstants.operatorGamepadPort);
+    public final static CommandXboxController operatorController = new CommandXboxController(3);
     public static Joystick ButtonPanel = new Joystick(ControllerConstants.buttonPanelPort);
 
     //Name Commands

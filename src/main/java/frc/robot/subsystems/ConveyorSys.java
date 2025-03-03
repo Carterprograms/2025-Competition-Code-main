@@ -26,7 +26,7 @@ public class ConveyorSys extends SubsystemBase {
             ConveyorBwd = true;
         }
 
-        if (ConveyorFwd == true
+        if (ConveyorFwd == true && ConveyorBwd == false
         ) {
             m_conveyorMtr.set(1);
             ConveyorFwd = false;
