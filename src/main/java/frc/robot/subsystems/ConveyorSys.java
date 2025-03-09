@@ -9,7 +9,7 @@ import frc.robot.RobotContainer;
 
 public class ConveyorSys extends SubsystemBase {
 
-    public static SparkMax m_conveyorMtr = new SparkMax(CANDevices.m_conveyorMtrId, MotorType.kBrushless);
+    public static SparkMax m_conveyorMtr = new SparkMax(CANDevices.m_conveyorMtrId, MotorType.kBrushed);
 
     private boolean ConveyorFwd = false;
     private boolean ConveyorBwd = false;

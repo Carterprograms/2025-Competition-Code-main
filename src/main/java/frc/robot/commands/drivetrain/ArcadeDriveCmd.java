@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveSys;
+import frc.robot.util.limelight.LimelightPoseEstimator;
 
 public class ArcadeDriveCmd extends Command {
 
@@ -83,8 +84,8 @@ public class ArcadeDriveCmd extends Command {
 
         swerveSys.drive(
             -drive * DriveConstants.maxDriveSpeedMetersPerSec,
-            -strafe * DriveConstants.maxDriveSpeedMetersPerSec,
-            -rot * DriveConstants.maxTurnSpeedRadPerSec,
+            strafe * DriveConstants.maxDriveSpeedMetersPerSec,
+            rot * DriveConstants.maxTurnSpeedRadPerSec,
             isFieldRelative
         );
     }

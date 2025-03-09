@@ -30,7 +30,7 @@ public class EndEffectorSys extends SubsystemBase {
             releaseCoral == false
         ) {
             m_Servo.set(0);
-            System.out.println("Ready For Coral!");
+            //System.out.println("Ready For Coral!");
         }
     }
 }

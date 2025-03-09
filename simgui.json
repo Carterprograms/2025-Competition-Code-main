@@ -5,8 +5,5 @@
       "/SmartDashboard/Alerts": "Alerts",
       "/SmartDashboard/auto selector": "String Chooser"
     }
-  },
-  "NetworkTables Info": {
-    "visible": true
   }
 }

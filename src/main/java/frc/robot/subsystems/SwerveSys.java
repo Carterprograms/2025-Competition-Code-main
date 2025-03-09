@@ -175,10 +175,10 @@ public class SwerveSys extends SubsystemBase {
     }
 
     SwerveModuleState[] states = new SwerveModuleState[] {
-        new SwerveModuleState(frontLeftMod.getVelocityMetersPerSec(), frontLeftMod.getSteerEncAngle()),
+        new SwerveModuleState(frontLeftMod.getVelocityMetersPerSec(), frontLeftMod.getSteerEncAngle())/*,
         new SwerveModuleState(frontRightMod.getVelocityMetersPerSec(), frontRightMod.getSteerEncAngle()),
         new SwerveModuleState(backLeftMod.getVelocityMetersPerSec(), backLeftMod.getSteerEncAngle()),
-        new SwerveModuleState(backRightMod.getVelocityMetersPerSec(), backRightMod.getSteerEncAngle())
+        new SwerveModuleState(backRightMod.getVelocityMetersPerSec(), backRightMod.getSteerEncAngle())*/
         };
         
 
@@ -198,7 +198,7 @@ public class SwerveSys extends SubsystemBase {
             }
         }
         publisher.set(states);
-        //System.out.println(getModuleStates());
+        System.out.println(states);
     }
     
     /**
