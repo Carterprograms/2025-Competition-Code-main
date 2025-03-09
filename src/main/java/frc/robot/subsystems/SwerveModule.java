@@ -121,13 +121,17 @@ public class SwerveModule extends SubsystemBase {
 
         DCMotor gearbox = DCMotor.getNeoVortex(1); // One motor for a drive or steering sim
         double momentOfInertia = 0.00032; // Moment of inertia in kg·m²
-        LinearSystem<N2, N1, N2> dcMotorPlant = 
+        LinearSystem<N2, N1, N2> dcMotorPlantDrive = 
             LinearSystemId.createDCMotorSystem(
             DriveConstants.kvVoltSecsPerMeter,
             DriveConstants.kaVoltSecsPerMeterSq);
+
+        LinearSystem<N2, N1, N2> dcMotorPlantSteer = LinearSystemId.createDCMotorSystem(DCMotor.getNeoVortex(1),
+        0.004, 
+        1/DriveConstants.steerMtrGearReduction);
         
-        steeringSim = new DCMotorSim(dcMotorPlant, gearbox);
-        drivingSim = new DCMotorSim(dcMotorPlant, gearbox);
+        steeringSim = new DCMotorSim(dcMotorPlantSteer, gearbox);
+        drivingSim = new DCMotorSim(dcMotorPlantDrive, gearbox);
 
     }
 
