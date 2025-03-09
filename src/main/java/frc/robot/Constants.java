@@ -154,7 +154,7 @@ public class Constants {
 
         public static final double ksVolts = 0.667;
         public static final double kvVoltSecsPerMeter = 2.44;
-        public static final double kaVoltSecsPerMeterSq = 0.0;
+        public static final double kaVoltSecsPerMeterSq = 0.0127;
 
         public static final SimpleMotorFeedforward driveFF =
             new SimpleMotorFeedforward(ksVolts, kvVoltSecsPerMeter, kaVoltSecsPerMeterSq);

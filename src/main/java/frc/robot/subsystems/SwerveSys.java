@@ -197,7 +197,7 @@ public class SwerveSys extends SubsystemBase {
 
     StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
-    
+        
     public double simulatedAngleDiffRad;
 
     // This method will be called once per scheduler run
