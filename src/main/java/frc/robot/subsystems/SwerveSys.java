@@ -19,11 +19,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
@@ -179,12 +181,11 @@ public class SwerveSys extends SubsystemBase {
     );
     }
 
-    DCMotor gearbox = DCMotor.getNeoVortex(8); // 8 Neo Vortexs for drive and turning
+    DCMotor gearbox = DCMotor.getNeoVortex(1); // One steering motor sim
     double momentOfInertia = 0.00032; // Moment of inertia in kg·m²
-    LinearSystem<N1, N1, N1> flywheelPlant = LinearSystemId.createFlywheelSystem(gearbox, momentOfInertia, 5.36);
+    LinearSystem<N2, N1, N2> dcMotorPlant = LinearSystemId.createDCMotorSystem(DriveConstants.kvVoltSecsPerMeter, DriveConstants.kaVoltSecsPerMeterSq);
         
-    private final FlywheelSim m_flyWheelSim = 
-        new FlywheelSim(flywheelPlant, gearbox, 0.004);
+    DCMotorSim motorSim = new DCMotorSim(dcMotorPlant, gearbox, 0.004);
 
     SwerveModuleState[] states = new SwerveModuleState[] {
         new SwerveModuleState(frontLeftMod.getVelocityMetersPerSec(), frontLeftMod.getSteerEncAngle()),
@@ -203,9 +204,7 @@ public class SwerveSys extends SubsystemBase {
     @Override
     public void periodic() {
 
-        m_flyWheelSim.update(0.02);
-
-        simulatedAngleDiffRad = m_flyWheelSim.getAngularVelocityRadPerSec() * 0.02;
+        motorSim.update(0.02);
 
         // Updates the odometry every 20ms
         poseEstimator.update(imu.getRotation2d(), getModulePositions());
