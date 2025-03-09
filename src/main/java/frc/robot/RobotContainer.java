@@ -32,6 +32,8 @@ import frc.robot.subsystems.EndEffectorSys;
 import frc.robot.subsystems.LiftSys;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 public class RobotContainer {
@@ -59,6 +61,8 @@ public class RobotContainer {
     
     public RobotContainer() {
         RobotController.setBrownoutVoltage(DriveConstants.brownoutVoltage);
+
+        autoSelector = AutoBuilder.buildAutoChooser();
 
         //Initalize Commands
         lvl0Cmd = new Lvl0Cmd(liftSys);
