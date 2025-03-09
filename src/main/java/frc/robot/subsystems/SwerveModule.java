@@ -25,6 +25,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
@@ -113,7 +114,7 @@ public class SwerveModule extends SubsystemBase {
         canCoder.getConfigurator().apply(ccConfig);
 
         // Initializes the steer encoder position to the CANCoder position, accounting for offset.
-        steerEnc.setPosition(getCanCoderAngle().getRadians() - offset.getRadians());
+        steerEnc.setPosition(getCanCoderAngle().getRadians() /*- offset.getRadians()*/);
 
         steeringFlexSim = new SparkFlexSim(steerMtr, DCMotor.getNeoVortex(1));
         drivingFlexSim = new SparkFlexSim(driveMtr, DCMotor.getNeoVortex(1));
@@ -130,6 +131,7 @@ public class SwerveModule extends SubsystemBase {
 
     }
 
+    
     @Override
     public void periodic() {
         // Set Inputs
@@ -150,8 +152,12 @@ public class SwerveModule extends SubsystemBase {
             0.02
         );
 
-        steeringSim.setAngle(Units.radiansToDegrees(steeringSim.getAngularPositionRad()));
-        drivingSim.setAngle(Units.radiansToDegrees(drivingSim.getAngularPositionRad()));
+        canCoder.getSimState().setRawPosition(steeringSim.getAngularPositionRotations());
+
+        SmartDashboard.putNumber("driveMotor/id" + driveMtr.getDeviceId() + "/simPos", drivingSim.getAngularPositionRad());
+
+        /*steeringSim.setAngle(Units.radiansToDegrees(steeringSim.getAngularPositionRad()));
+        drivingSim.setAngle(Units.radiansToDegrees(drivingSim.getAngularPositionRad()));*/
 
     }
 

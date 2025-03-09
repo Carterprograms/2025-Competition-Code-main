@@ -183,7 +183,7 @@ public class SwerveSys extends SubsystemBase {
 
 
 
-    SwerveModuleState[] states = new SwerveModuleState[] {
+    SwerveModuleState[] desiredStates = new SwerveModuleState[] {
         new SwerveModuleState(frontLeftMod.getVelocityMetersPerSec(), frontLeftMod.getSteerEncAngle()),
         new SwerveModuleState(frontRightMod.getVelocityMetersPerSec(), frontRightMod.getSteerEncAngle()),
         new SwerveModuleState(backLeftMod.getVelocityMetersPerSec(), backLeftMod.getSteerEncAngle()),
@@ -191,17 +191,26 @@ public class SwerveSys extends SubsystemBase {
         };
         
 
-    StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
+
+    StructArrayPublisher<SwerveModuleState> desiredStatesPublisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+
+    StructArrayPublisher<SwerveModuleState> measuredStatePublisher = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("StatesMeasured", SwerveModuleState.struct).publish();
         
     public double simulatedAngleDiffRad;
 
     // This method will be called once per scheduler run
     @Override
     public void periodic() {
-
-
-
+        
+    SwerveModuleState[] measuredStates = new SwerveModuleState[] {
+        new SwerveModuleState(frontLeftMod.getVelocityMetersPerSec(), frontLeftMod.getSteerEncAngle()),
+        new SwerveModuleState(frontRightMod.getVelocityMetersPerSec(), frontRightMod.getSteerEncAngle()),
+        new SwerveModuleState(backLeftMod.getVelocityMetersPerSec(), backLeftMod.getSteerEncAngle()),
+        new SwerveModuleState(backRightMod.getVelocityMetersPerSec(), backRightMod.getSteerEncAngle())
+        };
+    
         // Updates the odometry every 20ms
         poseEstimator.update(imu.getRotation2d(), getModulePositions());
 
@@ -211,8 +220,8 @@ public class SwerveSys extends SubsystemBase {
                 poseEstimator.addVisionMeasurement(limelightPose.get(), limelightPoseEstimator.getCaptureTimestamp());
             }
         }
-        publisher.set(states);
-        System.out.println(states);
+        desiredStatesPublisher.set(desiredStates);
+        measuredStatePublisher.set(measuredStates);
     }
     
     /**
