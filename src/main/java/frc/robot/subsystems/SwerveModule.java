@@ -23,6 +23,7 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -46,6 +47,12 @@ public class SwerveModule extends SubsystemBase {
     // Instaciate PID Controllers
     private final SparkClosedLoopController steerController;
     private final SparkClosedLoopController driveController;
+
+    private final SparkFlexSim steeringFlexSim;
+    private final SparkFlexSim drivingFlexSim;
+
+    private final DCMotorSim steeringSim;
+    private final DCMotorSim drivingSim;
 
     /**
      * Constructs a new SwerveModule.
@@ -108,8 +115,8 @@ public class SwerveModule extends SubsystemBase {
         // Initializes the steer encoder position to the CANCoder position, accounting for offset.
         steerEnc.setPosition(getCanCoderAngle().getRadians() - offset.getRadians());
 
-        SparkFlexSim steeringFlexSim = new SparkFlexSim(steerMtr, DCMotor.getNeoVortex(1));
-        SparkFlexSim drivingFlexSim = new SparkFlexSim(driveMtr, DCMotor.getNeoVortex(1));
+        steeringFlexSim = new SparkFlexSim(steerMtr, DCMotor.getNeoVortex(1));
+        drivingFlexSim = new SparkFlexSim(driveMtr, DCMotor.getNeoVortex(1));
 
         DCMotor gearbox = DCMotor.getNeoVortex(1); // One motor for a drive or steering sim
         double momentOfInertia = 0.00032; // Moment of inertia in kg·m²
@@ -118,17 +125,34 @@ public class SwerveModule extends SubsystemBase {
             DriveConstants.kvVoltSecsPerMeter,
             DriveConstants.kaVoltSecsPerMeterSq);
         
-        DCMotorSim steeringSim = new DCMotorSim(dcMotorPlant, gearbox);
-        DCMotorSim drivingSim = new DCMotorSim(dcMotorPlant, gearbox);
+        steeringSim = new DCMotorSim(dcMotorPlant, gearbox);
+        drivingSim = new DCMotorSim(dcMotorPlant, gearbox);
 
     }
 
     @Override
     public void periodic() {
-
+        // Set Inputs
+        steeringSim.setInputVoltage(steeringFlexSim.getAppliedOutput() * 12.0);
+        drivingSim.setInputVoltage(drivingFlexSim.getAppliedOutput() * 12.0);
+        // Update Sims
         steeringSim.update(0.02);
         drivingSim.update(0.02);
+
+        steeringFlexSim.iterate(
+            Units.radiansPerSecondToRotationsPerMinute(steeringSim.getAngularVelocityRadPerSec()),
+            12, 0.02
+        );
         
+        drivingFlexSim.iterate(
+            Units.radiansPerSecondToRotationsPerMinute(drivingSim.getAngularVelocityRadPerSec()),
+            12,
+            0.02
+        );
+
+        steeringSim.setAngle(Units.radiansToDegrees(steeringSim.getAngularPositionRad()));
+        drivingSim.setAngle(Units.radiansToDegrees(drivingSim.getAngularPositionRad()));
+
     }
 
     /**
