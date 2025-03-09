@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -17,6 +18,12 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
@@ -100,6 +107,28 @@ public class SwerveModule extends SubsystemBase {
 
         // Initializes the steer encoder position to the CANCoder position, accounting for offset.
         steerEnc.setPosition(getCanCoderAngle().getRadians() - offset.getRadians());
+
+        SparkFlexSim steeringFlexSim = new SparkFlexSim(steerMtr, DCMotor.getNeoVortex(1));
+        SparkFlexSim drivingFlexSim = new SparkFlexSim(driveMtr, DCMotor.getNeoVortex(1));
+
+        DCMotor gearbox = DCMotor.getNeoVortex(1); // One motor for a drive or steering sim
+        double momentOfInertia = 0.00032; // Moment of inertia in kg·m²
+        LinearSystem<N2, N1, N2> dcMotorPlant = 
+            LinearSystemId.createDCMotorSystem(
+            DriveConstants.kvVoltSecsPerMeter,
+            DriveConstants.kaVoltSecsPerMeterSq);
+        
+        DCMotorSim steeringSim = new DCMotorSim(dcMotorPlant, gearbox);
+        DCMotorSim drivingSim = new DCMotorSim(dcMotorPlant, gearbox);
+
+    }
+
+    @Override
+    public void periodic() {
+
+        steeringSim.update(0.02);
+        drivingSim.update(0.02);
+        
     }
 
     /**

@@ -181,15 +181,7 @@ public class SwerveSys extends SubsystemBase {
     );
     }
 
-    DCMotor gearbox = DCMotor.getNeoVortex(1); // One motor for a drive or steering sim
-    double momentOfInertia = 0.00032; // Moment of inertia in kg·m²
-    LinearSystem<N2, N1, N2> dcMotorPlant = 
-        LinearSystemId.createDCMotorSystem(
-        DriveConstants.kvVoltSecsPerMeter,
-        DriveConstants.kaVoltSecsPerMeterSq);
-        
-    DCMotorSim steeringSim = new DCMotorSim(dcMotorPlant, gearbox);
-    DCMotorSim drivingSim = new DCMotorSim(dcMotorPlant, gearbox);
+
 
     SwerveModuleState[] states = new SwerveModuleState[] {
         new SwerveModuleState(frontLeftMod.getVelocityMetersPerSec(), frontLeftMod.getSteerEncAngle()),
@@ -208,8 +200,7 @@ public class SwerveSys extends SubsystemBase {
     @Override
     public void periodic() {
 
-        steeringSim.update(0.02);
-        drivingSim.update(0.02);
+
 
         // Updates the odometry every 20ms
         poseEstimator.update(imu.getRotation2d(), getModulePositions());
