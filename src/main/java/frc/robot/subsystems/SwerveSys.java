@@ -23,6 +23,7 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -162,8 +163,8 @@ public class SwerveSys extends SubsystemBase {
             this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> setChassisSpeeds(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(0, 0.0, 0.0) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -182,23 +183,13 @@ public class SwerveSys extends SubsystemBase {
     }
 
 
-
-    SwerveModuleState[] desiredStates = new SwerveModuleState[] {
-        new SwerveModuleState(frontLeftMod.getVelocityMetersPerSec(), frontLeftMod.getSteerEncAngle()),
-        new SwerveModuleState(frontRightMod.getVelocityMetersPerSec(), frontRightMod.getSteerEncAngle()),
-        new SwerveModuleState(backLeftMod.getVelocityMetersPerSec(), backLeftMod.getSteerEncAngle()),
-        new SwerveModuleState(backRightMod.getVelocityMetersPerSec(), backRightMod.getSteerEncAngle())
-        };
-        
-
-
-    StructArrayPublisher<SwerveModuleState> desiredStatesPublisher = NetworkTableInstance.getDefault()
-    .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+    StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+  .getStructTopic("MyPose", Pose2d.struct).publish();
+    StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
+  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
 
     StructArrayPublisher<SwerveModuleState> measuredStatePublisher = NetworkTableInstance.getDefault()
     .getStructArrayTopic("StatesMeasured", SwerveModuleState.struct).publish();
-        
-    public double simulatedAngleDiffRad;
 
     // This method will be called once per scheduler run
     @Override
@@ -210,7 +201,17 @@ public class SwerveSys extends SubsystemBase {
         new SwerveModuleState(backLeftMod.getVelocityMetersPerSec(), backLeftMod.getSteerEncAngle()),
         new SwerveModuleState(backRightMod.getVelocityMetersPerSec(), backRightMod.getSteerEncAngle())
         };
-    
+
+        Pose2d poseA = new Pose2d();
+        Pose2d poseB = new Pose2d();
+
+        poseA = getPose();
+        poseB = getPose();
+
+        measuredStatePublisher.set(measuredStates);
+        publisher.set(poseA);
+        arrayPublisher.set(new Pose2d[] {poseA, poseB});
+
         // Updates the odometry every 20ms
         poseEstimator.update(imu.getRotation2d(), getModulePositions());
 
@@ -220,8 +221,7 @@ public class SwerveSys extends SubsystemBase {
                 poseEstimator.addVisionMeasurement(limelightPose.get(), limelightPoseEstimator.getCaptureTimestamp());
             }
         }
-        desiredStatesPublisher.set(desiredStates);
-        measuredStatePublisher.set(measuredStates);
+
     }
     
     /**

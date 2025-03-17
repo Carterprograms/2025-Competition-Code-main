@@ -1,11 +1,15 @@
 package frc.robot.commands.drivetrain;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveSys;
 import frc.robot.util.limelight.LimelightPoseEstimator;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class ArcadeDriveCmd extends Command {
 
@@ -62,7 +66,8 @@ public class ArcadeDriveCmd extends Command {
 
     // Called when the command is initially scheduled.
     @Override
-    public void initialize() {}
+    public void initialize() {
+    }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
@@ -81,13 +86,22 @@ public class ArcadeDriveCmd extends Command {
 
             rot = Math.copySign(Math.pow(rot, 2.0), rot);
         }
-
+        if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red){
         swerveSys.drive(
             drive * DriveConstants.maxDriveSpeedMetersPerSec,
             strafe * DriveConstants.maxDriveSpeedMetersPerSec,
-            rot * DriveConstants.maxTurnSpeedRadPerSec,
+            -rot * DriveConstants.maxTurnSpeedRadPerSec,
             isFieldRelative
         );
+        }
+        else {
+            swerveSys.drive(
+            -drive * DriveConstants.maxDriveSpeedMetersPerSec,
+            -strafe * DriveConstants.maxDriveSpeedMetersPerSec,
+            -rot * DriveConstants.maxTurnSpeedRadPerSec,
+            isFieldRelative
+        );
+        }
     }
     
     // Called once the command ends or is interrupted.

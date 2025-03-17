@@ -99,15 +99,15 @@ public class Constants {
          * The gear reduction from the drive motor to the wheel.
          * 
          * The drive gear ratios for the different levels can be found from the chart at
-         * swervedrivespecialties.com/products/mk41-swerve-module.
+         * 
          */
         // This is the gear ratio for L3 modules.
-        public static final double driveMtrGearReduction = (16.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0);
+        public static final double driveMtrGearReduction = 5.36;
 
         /**
          * The gear reduction from the steer motor to the wheel.
          */
-        public static final double steerMtrGearReduction = (14.0 / 50.0) * (10.0 / 60.0);
+        public static final double steerMtrGearReduction = 150/7;
 
         public static final double wheelRadiusMeters = Units.inchesToMeters(2);
         public static final double wheelCircumferenceMeters = 2.0 * wheelRadiusMeters * Math.PI;
@@ -115,7 +115,7 @@ public class Constants {
         public static final double driveMetersPerEncRev = wheelCircumferenceMeters * driveMtrGearReduction;
         public static final double driveMetersPerSecPerMtrRPM = driveMetersPerEncRev / 60.0;
 
-        public static final double steerRadiansPerEncRev = 2 * Math.PI * DriveConstants.steerMtrGearReduction;
+        public static final double steerRadiansPerEncRev = 2 * Math.PI * steerMtrGearReduction;
 
         public static final double freeMetersPerSecond = 6784 * driveMetersPerSecPerMtrRPM;
 

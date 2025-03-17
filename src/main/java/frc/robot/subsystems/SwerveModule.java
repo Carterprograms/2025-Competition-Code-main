@@ -160,8 +160,8 @@ public class SwerveModule extends SubsystemBase {
 
         SmartDashboard.putNumber("driveMotor/id" + driveMtr.getDeviceId() + "/simPos", drivingSim.getAngularPositionRad());
 
-        /*steeringSim.setAngle(Units.radiansToDegrees(steeringSim.getAngularPositionRad()));
-        drivingSim.setAngle(Units.radiansToDegrees(drivingSim.getAngularPositionRad()));*/
+        steeringSim.setAngle(Units.radiansToDegrees(steeringSim.getAngularPositionRad()));
+        drivingSim.setAngle(Units.radiansToDegrees(drivingSim.getAngularPositionRad()));
 
     }
 
@@ -275,13 +275,10 @@ public class SwerveModule extends SubsystemBase {
             driveMtr.set(desiredState.speedMetersPerSecond / DriveConstants.freeMetersPerSecond);
         }
         else {
-            /*driveController.setReference(
+            driveController.setReference(
                 desiredState.speedMetersPerSecond,
-                ControlType.kVelocity,
-                0, 
-                DriveConstants.driveFF.calculate(desiredState.speedMetersPerSecond)
-            );*/
-            driveController.setReference(0.0,ControlType.kPosition);
+                ControlType.kVelocity
+            );
         }
     }
 
