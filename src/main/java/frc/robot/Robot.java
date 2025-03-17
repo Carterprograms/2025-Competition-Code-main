@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -9,23 +11,22 @@ public class Robot extends TimedRobot {
     
     private RobotContainer robotContainer;
     private Command autonomousCommand;
-
-    // private UsbCamera camera;
+    private UsbCamera camera;
 
     @Override
     public void robotInit() {
 
         robotContainer = new RobotContainer();
 
-        // camera = new UsbCamera("driver camera", 0);
+        camera = CameraServer.startAutomaticCapture();
+        camera.setResolution(640, 480);
+        camera.setFPS(30);
         
-        // CameraServer.startAutomaticCapture(camera);
     }
 
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-
         robotContainer.updateInterface();
     }
 
