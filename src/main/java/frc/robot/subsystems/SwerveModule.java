@@ -254,6 +254,7 @@ public class SwerveModule extends SubsystemBase {
      * @param desiredState Object that holds a desired linear and steerational setpoint.
      * @param isClosedLoop True if the velocity control is closed-loop.
      */
+    @SuppressWarnings("deprecation")
     public void setDesiredState(SwerveModuleState desiredState, boolean isClosedLoop) {
         
         // Optimizes speed and angle to minimize change in heading
