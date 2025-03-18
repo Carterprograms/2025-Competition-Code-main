@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drivetrain.ArcadeDriveCmd;
+import frc.robot.commands.drivetrain.AutoAlignCmd;
 import frc.robot.commands.drivetrain.LockCmd;
 import frc.robot.commands.drivetrain.Lvl0Cmd;
 import frc.robot.commands.drivetrain.Lvl1Cmd;
@@ -55,6 +56,7 @@ public class RobotContainer {
     private final Lvl3Cmd lvl3Cmd;
     private final Lvl4Cmd lvl4Cmd;
     private final ReleaseCoralCmd releaseCoralCmd;
+    private final AutoAlignCmd autoAlignCmd;
     
     //Initialize auto selector.
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
@@ -71,6 +73,7 @@ public class RobotContainer {
         lvl3Cmd = new Lvl3Cmd(liftSys);
         lvl4Cmd = new Lvl4Cmd(liftSys);
         releaseCoralCmd = new ReleaseCoralCmd(endEffectorSys);
+        autoAlignCmd = new AutoAlignCmd(swerveSys);
 
         //Add Requirements
         lvl0Cmd.addRequirements(liftSys);
@@ -79,6 +82,7 @@ public class RobotContainer {
         lvl3Cmd.addRequirements(liftSys);
         lvl4Cmd.addRequirements(liftSys);
         releaseCoralCmd.addRequirements(endEffectorSys);
+        autoAlignCmd.addRequirements(swerveSys);
             
         //Register Commands to PathPlanner
         NamedCommands.registerCommand("lvl4", new Lvl4Cmd(liftSys));
@@ -139,7 +143,7 @@ public class RobotContainer {
         driverController.a().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(0), swerveSys));
         driverController.leftBumper().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-60), swerveSys));
         driverController.x().whileTrue(new ReefPositioningCmd(Rotation2d.fromDegrees(-120), swerveSys));
-        driverController.rightStick().whileTrue(new AimToReefCmd(swerveSys));
+        driverController.rightStick().whileTrue(new AutoAlignCmd(swerveSys));
     }
 
     public Command getAutonomousCommand() {

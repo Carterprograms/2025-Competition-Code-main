@@ -4,7 +4,7 @@
 
 package frc.robot.commands.lights;
 
-import java.util.function.BooleanSupplier;
+//import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -16,14 +16,14 @@ public class LightsDefaultCmd extends Command {
 
 	private final LightsSys lightsSys;
 
-	private final BooleanSupplier hasNoteSupplier;
+	//private final BooleanSupplier hasNoteSupplier;
 
-	private boolean prevHasNote = true;
+	//private boolean prevHasNote = true;
 
 	/** Creates a new LightsDefaultCmd. */
-	public LightsDefaultCmd(LightsSys lightsSys, BooleanSupplier hasNoteSupplier) {
+	public LightsDefaultCmd(LightsSys lightsSys/*, BooleanSupplier hasNoteSupplier*/) {
 		this.lightsSys = lightsSys;
-		this.hasNoteSupplier = hasNoteSupplier;
+		//this.hasNoteSupplier = hasNoteSupplier;
 
 		addRequirements(lightsSys);
 	}
